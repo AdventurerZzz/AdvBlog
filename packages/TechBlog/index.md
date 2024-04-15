@@ -3,22 +3,22 @@
 layout: home
 
 hero:
-  name: "前端技术博客"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  name: "Adventurer的文档站"
+  text: "构建知识库"
+  tagline: 好记性不如烂笔头
+  image:
+    src: /book.svg
+    alt: 背景图
   actions:
     - theme: brand
-      text: Markdown Examples
+      text: 建站原因
       link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 💪 努力
+    details: 认定一件事，坚持不懈，直到成功
+  - title: 🤔 思考
+    details: 活到老，学到老
+  - title: 💡 小建议
+    details: 选择大于努力
 ---
