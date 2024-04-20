@@ -43,6 +43,46 @@
  *   in custom container, badges, etc.
  * -------------------------------------------------------------------------- */
 
+ /* 自定义侧边栏在最左边，右边撑满宽度 */
+.VPDoc .container {
+  margin: 0 !important;
+}
+@media (min-width: 960px) {
+  .VPDoc:not(.has-sidebar) .content {
+    max-width: 1552px !important;
+  }
+}
+.VPDoc.has-aside .content-container {
+  max-width: 1488px !important;
+}
+@media (min-width: 960px) {
+  .VPDoc:not(.has-sidebar) .container {
+    display: flex;
+    justify-content: center;
+    max-width: 1562px !important;
+  }
+}
+.aside-container {
+  position: fixed;
+  top: 0;
+  padding-top: calc(
+    var(--vp-nav-height) + var(--vp-layout-top-height, 0px) +
+      var(--vp-doc-top-height, 0px) + 10px
+  ) !important;
+  width: 224px;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* 自定义h2的间距 */
+.vp-doc h2 {
+  margin: 0px 0 16px;
+  padding-top: 24px;
+  border: none;
+}
+ /**/
  :root {
   --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);

@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: 建站原因
-      link: /markdown-examples
+      link: /build-reason
 
 features:
   - title: 💪 努力
