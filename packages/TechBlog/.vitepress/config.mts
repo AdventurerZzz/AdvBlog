@@ -15,12 +15,15 @@ export default defineConfig({
       {
         text: "前端",
         items: [
-          { text: "前端技术", link: "/" },
-          { text: "前端面试题", link: "/" },
+          { text: "Vue", link: "/markdown/web-developer/Vue" },
+          { text: "前端面试题", link: "/markdown/web-developer/Interview" },
         ],
       },
       { text: "后端", link: "/markdown-examples" },
-      { text: "性能优化", link: "/" },
+      {
+        text: "性能优化",
+        link: "/markdown/performance/performance",
+      },
     ],
     // sidebar: [
     //   {
