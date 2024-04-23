@@ -24,6 +24,10 @@ export default defineConfig({
         text: "性能优化",
         link: "/markdown/performance/performance",
       },
+      {
+        text: "其他",
+        link: "/markdown/other",
+      },
     ],
     // sidebar: [
     //   {
