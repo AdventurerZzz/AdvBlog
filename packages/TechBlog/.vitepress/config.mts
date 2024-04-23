@@ -19,7 +19,7 @@ export default defineConfig({
           { text: "前端面试题", link: "/markdown/web-developer/Interview" },
         ],
       },
-      { text: "后端", link: "/markdown-examples" },
+      { text: "后端", link: "/api-examples" },
       {
         text: "性能优化",
         link: "/markdown/performance/performance",
