@@ -138,3 +138,54 @@
 #### JPEG
 
 <code>JPEG</code>是一种**有损压缩算法**的图像格式，它通过去除冗余图像和色彩数据来获得**较高的压缩率**，同时还能获得较高的图像质量。
+
+它通常有两种压缩模式，一种是<code>基线模式</code>，一种是<code>渐进式模式</code>。<code>基线模式</code>是自上而下进行逐渐加载的，而<code>渐进式模式</code>是将图像文件分多次扫描，首先展示一个低质量模糊的图像，然后随着扫描次数的增加，不断提高清晰度。
+
+**在选择哪种压缩模式时，应该考虑图像的大小，因为渐进式模式会增加重复检索开销，文件太小就没必要使用渐进式模式。但是目前通常都是使用渐进式模式，一般的使用场景是背景图、轮播图、商品的 banner 图。**
+
+---
+
+##### 创建渐进式 JPEG
+
+可以通过构建工具来自动化完成，通过如下代码可以将工作加入 gulp 处理管道：
+
+```js
+const gulp = require("gulp");
+const imagemin = require("gulp-imagemin");
+gulp.task("imagemin", () => {
+  gulp
+    .src("./src/images/*.jpg")
+    .pipe(
+      imagemin({
+        progressive: true,
+      })
+    )
+    .pipe(gulp.dest("./dist/images"));
+});
+```
+
+这里还有一些其他 JPEG 编码方式，如<code>MozJPEG</code>、<code>Guetzli</code> 等，具体可以参考[imagemin](https://www.npmjs.com/package/imagemin)。
+
+---
+
+#### GIF
+
+<code>GIF</code>通常用于一些小图标或者 Logo，当下一般在需要使用动画时会使用<code>GIF</code>。
+
+---
+
+##### GIF 动画优化
+
+由于动画包含了许多静态帧，并且每个静态帧图像上的内容在相邻的不同帧上很相似，**所以可以通过工具移除动画里连续帧中的像素信息**，这里通过<code>GIFSicle</code>工具来实现。
+
+```js
+const { execFile } = require("child_process");
+const gifsicle = require("gifsicle");
+execFile(gifsicle, ["-o", "output.gif", "input.gif"], (err) => {
+  console.log("动画压缩完成");
+});
+```
+
+---
+
+#### PNG
