@@ -189,3 +189,30 @@ execFile(gifsicle, ["-o", "output.gif", "input.gif"], (err) => {
 ---
 
 #### PNG
+
+<code>PNG</code>是无损压缩的高保真图片格式，它的优点是可以保持图像的透明效果，并且
+对线条的处理更加细腻，增强了色彩的表现力，**但是缺点是文件体积较大**。
+
+---
+
+##### 优化 PNG
+
+<code>PNG</code>图片有个优点，它能够通过增添一些自定义的"块"来实现额外的功能，但是对于 Web 来说，部分多余的块会自动被忽略，所以可以通过工具来移除这些无用的块。  
+因此可以使用 pngcrush 对这些多余的块进行删除压缩，代码如下：
+
+```js
+const imagemin = require("imagemin");
+const imageminPngcrush = require("imagemin-pngcrush");
+imagemin(["src/images/*.png"], "dist/images", {
+  plugins: [imageminPngcrush()],
+}).then(() => {
+  console.log("PNG 完成图像优化");
+});
+```
+
+其中，<code>imageminPngcrush</code>中可以带一些参数进行压缩。
+
+- <code>-rem alla</code>:删除所有块，保留控制 alpha 透明通道的块。
+- <code>reduce</code>：尝试减少调色板使用的颜色数量。
+
+---
