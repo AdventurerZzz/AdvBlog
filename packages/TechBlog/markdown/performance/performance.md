@@ -113,7 +113,7 @@
 
 ---
 
-### 图像基础
+### 3.1 图像基础
 
 图像资源优化的根本思想就是：**压缩**，其本质就是用更小的资源开销来完成图像的传输和展示。
 
@@ -129,7 +129,7 @@
 
 ---
 
-### 图像格式
+### 3.2 图像格式
 
 图像文件格式通常有<code>JPEG</code>、<code>PNG</code>、<code>GIF</code>、<code>webp</code>，<code>SVG</code>等。根据它们不同的特点，应该在适合它们的场景选取。
 
@@ -212,7 +212,76 @@ imagemin(["src/images/*.png"], "dist/images", {
 
 其中，<code>imageminPngcrush</code>中可以带一些参数进行压缩。
 
-- <code>-rem alla</code>:删除所有块，保留控制 alpha 透明通道的块。
+- <code>rem alla</code>:删除所有块，保留控制 alpha 透明通道的块。
 - <code>reduce</code>：尝试减少调色板使用的颜色数量。
 
 ---
+
+#### WEBP
+
+<code>Webp</code>具有多个优异的特性，包括：较高的视觉体验，而且优秀的压缩率，并且支持动画和透明度。但是，和所有新技术一样，不可避免会有一些兼容性问题。所以在使用的时候应该考虑浏览器的兼容问题。
+
+---
+
+##### WebP 转化
+
+最好使用构建工具辅助完成，比如通过 npm 安装<code>webp-loader</code>，然后在<code>webpack.config.js</code>中配置：
+
+```js
+loader: [
+  {
+    test: /\.(png|jpg|gif)$/i,
+    loader: ["file-loader", "webp-loader?{quality:13}"],
+  },
+];
+```
+
+---
+
+#### Base64
+
+<code>Base64</code>并不是一种图像文件格式，而是一种用于传输 8 位字节码的编码方式。它通过将编码直接写入 HTML 或 CSS 中实现图像的展示。一般将<code>Base64</code>编码的图片作为静态资源引入，减少请求次数。
+
+**浏览器会自动解析该编码并展示出图像，而无须发起任何关于该图像的 URL，这就是<code>Base64</code>的优点，同时也有一定缺点，图像大小会膨胀四分之三。下面是一些使用<code>Base64</code>编码的建议：**
+
+- 图像文件的实际尺寸是否很小
+- 图像文件的更新频率是否很低，以避免在使用<code>Base64</code>时，增加多的维护成本。
+
+---
+
+### 3.3 使用建议
+
+这部分给出一些在实际的开发条件下的优化建议以及注意事项。
+
+#### CSS Sprite
+
+这个技术就是我们常说的雪碧图，通过将多个小图标拼成一张大图，然后通过 CSS 的 background-position 属性来定位到对应的小图标。  
+**这个技术在我看来已经淘汰了，由于以下缺点：**
+
+1. 如果图标变化了，那么需要重新拼接雪碧图，而且雪碧图会很大，而且需要服务器支持。
+2. 随着图标增多，浏览器加载图片的时间也会增加。
+
+#### Web 字体
+
+<code>Web</code>字体，通过<code>@font-face</code>标签引入，然后通过<code>@font-family</code>属性来使用。在我看来一些应该图标 ICON 的都应该使用<code>Web</code>字体，因为<code>Web</code>字体的图标，可以更好的适应不同尺寸的设备，而且能够保证图标质量。
+
+**同时由于矢量图标打包到一个<code>Web</code>字体文件中，这个文件的大小通常不会很大，这个时候将字体格式文件编译为<code>Base64</code>编码，可以减少请求次数，这样的优化可以大幅减少页面加载时间。以下是操作建议：**
+
+1. **在 iconfont 下载的 CSS 文件中将代码修改如下文**
+
+```js
+@font-face {
+  font-family: "iconfont"; /* Project id 4381127 */
+  src:
+       url('data:font/truetype;charset=utf-8;base64,Base64String') format('truetype');
+  }
+```
+
+2. **将 iconfont 文件的 TTF 文件转化为 Base64 编码，并且将生成的 Base64 编码替换掉@font-face 中的 Base64String**
+3. **在 App.vue 中引入 iconfont.css**
+
+**这里是参考的网址**[icon 转 base64 流程。](https://blog.csdn.net/yanyunqi02/article/details/130655841)
+
+---
+
+## 四丶加载优化
