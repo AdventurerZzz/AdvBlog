@@ -52,7 +52,7 @@
 3. 如果还未找到，则从本地的 hosts 文件中查询；
 4. 如果在本地主机未找到，则向本地域名服务器查询；
 5. 如果本地域名服务器未找到，则会采取迭代的方式向根域名服务器、COM 域名顶级服务器和权限域名查询；
-   [![DNS解析图](../../dns.png "DNS解析图")](https://img-blog.csdnimg.cn/06f23ef6c8db46e59049279a0ce9cd20.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAYmFuZ3NoYW8xOTg5,size_20,color_FFFFFF,t_70,g_se,x_16)  
+   [![DNS解析图](../../public/dns.png "DNS解析图")](https://img-blog.csdnimg.cn/06f23ef6c8db46e59049279a0ce9cd20.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAYmFuZ3NoYW8xOTg5,size_20,color_FFFFFF,t_70,g_se,x_16)  
    图 2.1 DNS 解析过程
 
 **所以可以看出，DNS 解析是一个耗时的过程，如果解析域名过多，就会导致性能问题。这个地方能被当成一个可选择的优化点。**
@@ -74,7 +74,7 @@
 - <code>解决跨域</code>
 - <code>对静态资源缓存</code>
 
-  [![反向代理服务器图](../../proxy.png "反向代理服务器图")](https://img-blog.csdnimg.cn/67258e57480642c7adc184ab2b58672d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMzEyMDQ5,size_16,color_FFFFFF,t_70)  
+  [![反向代理服务器图](../../public/proxy.png "反向代理服务器图")](https://img-blog.csdnimg.cn/67258e57480642c7adc184ab2b58672d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMzEyMDQ5,size_16,color_FFFFFF,t_70)  
    图 2.1 DNS 解析过程
 
 ---
@@ -86,7 +86,7 @@
 **强缓存**是当浏览器通过响应头判断本地缓存未过期时，直接读取本地缓存，不再发起 HTTP 请求，通过设置<code>Cache-Control</code>字段中的<code>max-age</code>属性值来设置缓存过期时间。
 
 **协助缓存**是需要浏览器向服务器发起 HTTP 请求，来判断浏览器本地缓存的文件是否被修改。具体过程是判断浏览器请求头中的<code>If-Modified-Since</code>字段，与服务器端的<code>e-tag</code>是否匹配，如果本地缓存文件未修改，服务器返回<code>304</code>状态码，浏览器直接读取本地缓存。如图 2.2 所示。  
- [![缓存](../../huancun.png "缓存")](https://image-static.segmentfault.com/379/147/3791479945-f4c940afe80caf28_fix732)  
+ [![缓存](../../public/huancun.png "缓存")](https://image-static.segmentfault.com/379/147/3791479945-f4c940afe80caf28_fix732)  
  图 2.2 缓存过程
 
 **使用浏览器缓存可以有效地减少 HTTP 请求次数，以及资源的读取和减少服务器压力，从而提升性能。**
@@ -269,12 +269,11 @@ loader: [
 
 1. **在 iconfont 下载的 CSS 文件中将代码修改如下文**
 
-```js
+```css
 @font-face {
   font-family: "iconfont"; /* Project id 4381127 */
-  src:
-       url('data:font/truetype;charset=utf-8;base64,Base64String') format('truetype');
-  }
+  src: url("data:font/truetype;charset=utf-8;base64,Base64String") format("truetype");
+}
 ```
 
 2. **将 iconfont 文件的 TTF 文件转化为 Base64 编码，并且将生成的 Base64 编码替换掉@font-face 中的 Base64String**
@@ -285,3 +284,93 @@ loader: [
 ---
 
 ## 四丶加载优化
+
+第三章讲了图片的格式选取以及本身资源压缩优化，其实这还无法满足期望，我们还需要在资源加载的过程中进行优化，主要是三个小点：
+
+1. **资源的优先级**
+2. **延迟加载**
+3. **预加载**
+
+---
+
+### 4.1 图像延迟加载
+
+延迟加载是指在首次打开网站时。应当尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等用户滚动到该区域时才加载。
+
+图像的延迟加载其实就是我们平时所了解的图片懒加载，这里有很多方法可以实现懒加载：
+
+- **传统方式**——通过监听 scroll 事件和 resize 事件，判断图片是否进入可视区域，然后将<code>data-src</code>上面的<code>url</code>替换为<code>src</code>，这种方法优点是浏览器兼容性好，缺点是持续监听十分消耗性能。
+- <code>Intersection Observer</code>**(推荐)**——通过 IntersectionObserver API，判断图片是否进入可视区域，然后加载图片，原理类似传统方式，优点是简洁高效，缺点是浏览器可能不兼容(目前来说出现情况很少),以下是代码实现:
+
+```js
+//获取img所有img标签的lazy类
+const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+//当进入视口判断距离时，加载图片
+let lazyImageObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        let lazyImage = entry.target;
+        lazyImage.src = lazyImage.dataset.src;
+        lazyImage.classList.remove("lazy");
+        //取消监听
+        lazyImageObserver.unobserve(lazyImage);
+      }
+    });
+  },
+  //这里是控制图片距离视口的距离来加载图片
+  { rootMargin: "0px 0px 300px 0px" }
+);
+//监听
+lazyImages.forEach((lazyImage) => {
+  lazyImageObserver.observe(lazyImage);
+});
+```
+
+**原生延迟**——通过 <code>img</code> 标签的 <code>lazy</code> 属性实现懒加载,这种方式目前是最简洁的，但兼容不是很好，这里不多赘述。
+
+---
+
+### 4.2 加载注意事项
+
+对于图像的延迟加载，从理论上必然会对性能产生重要的影响，但在实现过程中有许多细节需要注意，稍有差池可能会造成负面结果。
+
+#### 4.2.1 资源占位
+
+当延迟加载的资源尚未加载完成时，应该显示一个有相同尺寸的占位图像，如果不使用占位图像，那么图像延迟显示出来后，尺寸更改可能会使页面布局出现偏移。  
+这个现象不仅带来负面体验，更严重的会造成**页面的重绘和回流，影响页面性能。**所以建议占位图像应该与延迟加载的资源尺寸相同，而且可以采用<code>Base64</code>图片。
+
+---
+
+### 4.3 资源优先级
+
+浏览器向网络请求到所有数据，本非每个字节都具有相同的优先级或重要性。一般浏览器会先加载<code>CSS</code>文件，然后再加载<code>JS</code>文件，即便如此也不能保证这个加载顺序是准确的。
+
+#### 4.3.1 优先级
+
+浏览器基于自身的启发式算法，会对资源的重要性进行划分等级，通常从低到高分为：<code>Lowest</code>、<code>Low</code>、<code>High</code>、<code>Highest</code>。  
+当资源对用户至关重要却被分到了过低的优先级时，这个时候就可以尝试**预加载**,**预连接**,**预提取**等方式来进行优化。
+
+#### 4.3.2 预加载
+
+使用<code>link</code>标签告诉浏览器当前指定的资源具有更高优先级：
+
+```js
+<link rel="perload" as='style' href="styles.css">
+```
+
+#### 4.3.3 预连接
+
+与 DNS 预解析类似，preconnect 不仅完成 DNS 预解析，同时还将进行 TCP 握手和建立传输层协议。可以这样使用
+
+```js
+<link rel="preconnect"  href="http://example.com">
+```
+
+#### 4.3.4 预获取
+
+如果我们确定某个资源将来一定会被使用到，我们可以让浏览器预先请求该资源并放入浏览器缓存中，也就是说如果我们猜测用户接下来将要访问哪个具体的资源，那就可以用 prefetching 来预加载确定的资源了。
+
+```js
+<link rel="prefetch"  href="image.png">
+```
