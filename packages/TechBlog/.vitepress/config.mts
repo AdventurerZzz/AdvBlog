@@ -3,7 +3,7 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Adventurer的文档站",
-  base: "/docs/",
+  base: "/AdvBlog/",
   description: "A VitePress Site",
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   themeConfig: {
