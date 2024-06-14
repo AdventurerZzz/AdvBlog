@@ -3,13 +3,13 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Adventurer的文档站",
+  base: "/docs/",
   description: "A VitePress Site",
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     outlineTitle: "文章目录",
     outline: [2, 6],
-
     aside: "left", // 设置右侧侧边栏在左侧显示
     nav: [
       {
