@@ -374,3 +374,13 @@ lazyImages.forEach((lazyImage) => {
 ```js
 <link rel="prefetch"  href="image.png">
 ```
+
+---
+
+## 五丶书写高性能的代码
+
+每当页面响应用户的交互时，可能会涉及成千上万行<code>JavaScript</code>的代码执行,高性能网站对这个过程的要求是不仅执行顺畅吴 BUG，能对用户的操作能更快响应，而且在执行完任务的同时占用更少的资源。所以要书写高性能的<code>JavaScript</code>代码能够在用户的浏览器中准确且高效地执行，这一点至关重要。
+
+---
+
+### 5.1 数据存取
